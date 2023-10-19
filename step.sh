@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
-if [ "${VERBOSE}" ]; then
-    set -x
+if "${VERBOSE}"; then
+  set -x
 fi
 
 if [ ! -f $GITHUB_APP_KEY_PATH ]; then

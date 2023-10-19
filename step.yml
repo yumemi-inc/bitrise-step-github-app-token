@@ -65,6 +65,13 @@ toolkit:
     entry_file: step.sh
 
 inputs:
+  - GITHUB_APP_TOKEN: $GITHUB_APP_TOKEN
+    opts:
+      title: "GitHub App Token"
+      is_sensitive: true
+      is_expand: true
+      is_dont_change_value: true
+
   - GITHUB_APP_ID:
     opts:
       title: "GitHub App Id"
@@ -83,10 +90,13 @@ inputs:
       is_expand: true
       is_required: true
 
-  - VERBOSE: false
+  - VERBOSE: "false"
     opts:
       title: "Verbose"
       category: Debug
+      value_options:
+      - "true"
+      - "false"
 
 outputs:
   - GITHUB_APP_TOKEN:
