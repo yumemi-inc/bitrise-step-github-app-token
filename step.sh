@@ -6,7 +6,7 @@ if "${VERBOSE}"; then
 fi
 
 if [ ! -f $GITHUB_APP_KEY_PATH ]; then
-    echo -e "$GITHUB_APP_KEY" > $GITHUB_APP_KEY_PATH
+  echo -e "$GITHUB_APP_KEY" > $GITHUB_APP_KEY_PATH
 fi
 
 header=$(echo -n '{"alg":"RS256","typ":"JWT"}' | base64 -b 0)
@@ -29,7 +29,7 @@ installation_id=$(
   | jq -r ".[] | .id"
 )
 
-installation_token=$(
+GITHUB_APP_TOKEN=$(
   curl -s -X POST \
     -H "Authorization: Bearer ${jwt}" \
     -H "Accept: application/vnd.github.v3+json" \
@@ -37,4 +37,5 @@ installation_token=$(
   | jq -r ".token"
 )
 
-envman add --key GITHUB_APP_TOKEN --value "${installation_token}"
+envman add --key GITHUB_APP_TOKEN --value "${GITHUB_APP_TOKEN}"
+echo "This output was GITHUB_APP_TOKEN: [REDACTED]"
