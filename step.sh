@@ -27,13 +27,16 @@ signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign 
 
 jwt="${unsigned_token}.${signed_token}"
 
-installation_id=$(
-  curl -s -X GET \
-    -H "Authorization: Bearer ${jwt}" \
-    -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/app/installations" \
-  | jq -r ".[] | .id"
-)
+installation_id=$GITHUB_APP_INSTALLATION
+if [ -z "$installation_id" ]; then
+  installation_id=$(
+    curl -s -X GET \
+      -H "Authorization: Bearer ${jwt}" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/app/installations" \
+    | jq -r ".[] | .id"
+  )
+fi
 
 GITHUB_APP_TOKEN=$(
   curl -s -X POST \

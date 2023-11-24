@@ -77,6 +77,12 @@ inputs:
       title: "GitHub App Id"
       is_sensitive: true
 
+  - GITHUB_APP_INSTALLATION:
+    opts:
+      title: "GitHub App installation"
+      category: GitHub App installation
+      is_sensitive: true
+
   - GITHUB_APP_KEY:
     opts:
       title: "GitHub App key"
