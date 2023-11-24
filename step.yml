@@ -69,13 +69,12 @@ inputs:
     opts:
       title: "GitHub App Token"
       is_sensitive: true
-      is_expand: true
       is_dont_change_value: true
 
   - GITHUB_APP_ID:
     opts:
       title: "GitHub App Id"
-      is_sensitive: true
+      is_required: true
 
   - GITHUB_APP_INSTALLATION:
     opts:
