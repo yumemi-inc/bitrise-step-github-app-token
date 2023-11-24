@@ -43,7 +43,7 @@ workflows:
         inputs:
         - GITHUB_APP_ID: $GITHUB_APP_ID
         - GITHUB_APP_KEY: $GITHUB_APP_KEY
-        - verbose: true
+        - VERBOSE: "true"
     - script:
         inputs:
         - content: |
