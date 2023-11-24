@@ -63,26 +63,23 @@ jwt="${unsigned_token}.${signed_token}"
 
 installation_id=$GITHUB_APP_INSTALLATION
 if [ -z "$installation_id" ]; then
-  installations="$WORK_DIR/installations"
-  curl -f -s -X GET \
-    -o $installations \
-    -H "Authorization: Bearer ${jwt}" \
-    -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/app/installations" 2>&1
-  installation_id=`cat $installations | jq -r ".[] | .id?"`
+  installations=$(
+    curl -s -X GET \
+      -H "Authorization: Bearer ${jwt}" \
+      -H "Accept: application/vnd.github.v3+json" \
+      "https://api.github.com/app/installations")
+  installation_id=`echo $installations | jq -r ".[] | .id?"`
   if [ "$installation_id" = "null" ]; then
     raise "Failed to fetch installation_id: $(<$installations)"
   fi
 fi
 
-access_tokens="$WORK_DIR/access_tokens"
-curl -f -s -X POST \
-  -o $access_tokens \
-  -H "Authorization: Bearer ${jwt}" \
-  -H "Accept: application/vnd.github.v3+json" \
-  "https://api.github.com/app/installations/${installation_id}/access_tokens" 2>&1
-
-github_app_token=`cat $access_tokens | jq -r ".token?"`
+access_tokens=$(
+  curl -s -X POST \
+    -H "Authorization: Bearer ${jwt}" \
+    -H "Accept: application/vnd.github.v3+json" \
+    "https://api.github.com/app/installations/${installation_id}/access_tokens")
+github_app_token=`echo $access_tokens | jq -r ".token?"`
 
 if [ "$github_app_token" = "null" ]; then
   raise "Failed to fetch github_app_token: $(<$github_app_token)"
