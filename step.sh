@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 set -e
 
+if [[ "$(uname)" == "Darwin" ]]; then
+  base64_without_wrap="base64 -b 0"  # macOS
+else
+  base64_without_wrap="base64 -w 0"  # Linux, GNU
+fi
+
 if "${VERBOSE}"; then
   set -x
 fi
@@ -9,12 +15,12 @@ if [ ! -f $GITHUB_APP_KEY_PATH ]; then
   echo -e "$GITHUB_APP_KEY" > $GITHUB_APP_KEY_PATH
 fi
 
-header=$(echo -n '{"alg":"RS256","typ":"JWT"}' | base64 -b 0)
+header=$(echo -n '{"alg":"RS256","typ":"JWT"}' | $base64_without_wrap)
 
 now=$(date "+%s")
 iat=$((${now} - 60))
 exp=$((${now} + (10 * 60)))
-payload=$(echo -n "{\"iat\":${iat},\"exp\":${exp},\"iss\":${GITHUB_APP_ID}}" | base64 -b 0)
+payload=$(echo -n "{\"iat\":${iat},\"exp\":${exp},\"iss\":${GITHUB_APP_ID}}" | $base64_without_wrap)
 
 unsigned_token="${header}.${payload}"
 signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign "${GITHUB_APP_KEY_PATH}" | base64)

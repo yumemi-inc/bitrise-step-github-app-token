@@ -1,7 +1,8 @@
+[![CI](https://github.com/yumemi-inc/bitrise-step-github-app-token/actions/workflows/ci.yml/badge.svg)](https://github.com/yumemi-inc/bitrise-step-github-app-token/actions/workflows/ci.yml)
+
 # github_app_token
 
 get GitHub Apps access token
-
 
 ## How to use this Step
 
