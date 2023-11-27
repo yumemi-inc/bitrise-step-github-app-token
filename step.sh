@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -e -o pipefail
+set -e
 
 readonly WORK_DIR=$(mktemp -d)
 
@@ -34,6 +34,7 @@ if [ ! -f $GITHUB_APP_KEY_PATH ]; then
     echo "GITHUB_APP_KEY is empty or GITHUB_APP_KEY_PATH does not exist.: $GITHUB_APP_KEY_PATH"
     exit 1
   fi
+  GITHUB_APP_KEY_PATH="$WORK_DIR/private-key.pem"
   echo -e "$GITHUB_APP_KEY" > $GITHUB_APP_KEY_PATH
 fi
 
@@ -63,26 +64,27 @@ jwt="${unsigned_token}.${signed_token}"
 
 installation_id=$GITHUB_APP_INSTALLATION
 if [ -z "$installation_id" ]; then
-  installations=$(
-    curl -s -X GET \
+  installation_id=$(
+    curl -f -s -X GET \
       -H "Authorization: Bearer ${jwt}" \
       -H "Accept: application/vnd.github.v3+json" \
-      "https://api.github.com/app/installations")
-  installation_id=`echo $installations | jq -r ".[] | .id?"`
+      "https://api.github.com/app/installations" \
+    | jq -r ".[] | .id?" \
+    ) 2>&1
   if [ "$installation_id" = "null" ]; then
-    raise "Failed to fetch installation_id: $(<$installations)"
+    raise "Failed to fetch installation_id"
   fi
 fi
 
-access_tokens=$(
-  curl -s -X POST \
+github_app_token=$(
+  curl -f -s -X POST \
     -H "Authorization: Bearer ${jwt}" \
     -H "Accept: application/vnd.github.v3+json" \
-    "https://api.github.com/app/installations/${installation_id}/access_tokens")
-github_app_token=`echo $access_tokens | jq -r ".token?"`
-
+    "https://api.github.com/app/installations/${installation_id}/access_tokens" \
+  | jq -r ".token?" \
+  ) 2>&1
 if [ "$github_app_token" = "null" ]; then
-  raise "Failed to fetch github_app_token: $(<$github_app_token)"
+  raise "Failed to fetch github_app_token"
 fi
 
 envman add --key GITHUB_APP_TOKEN --value "${github_app_token}"
