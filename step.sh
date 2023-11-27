@@ -24,18 +24,18 @@ function finally() {
 trap 'err ${LINENO[0]} ${FUNCNAME[1]}' ERR
 trap finally EXIT
 
-if [ -z "$GITHUB_APP_ID" ]; then
-  echo "GITHUB_APP_ID is empty.: $GITHUB_APP_ID"
+if [ -z "${github_app_id}" ]; then
+  echo "github_app_id is empty.: ${github_app_id}"
   exit 1
 fi
 
-if [ ! -f $GITHUB_APP_KEY_PATH ]; then
-  if [ -z "$GITHUB_APP_KEY" ]; then
-    echo "GITHUB_APP_KEY is empty or GITHUB_APP_KEY_PATH does not exist.: $GITHUB_APP_KEY_PATH"
+if [ ! -f ${github_app_key_path} ]; then
+  if [ -z "${github_app_key}" ]; then
+    echo "github_app_key is empty or github_app_key_path does not exist.: ${github_app_key_path}"
     exit 1
   fi
-  GITHUB_APP_KEY_PATH="$WORK_DIR/private-key.pem"
-  echo -e "$GITHUB_APP_KEY" > $GITHUB_APP_KEY_PATH
+  github_app_key_path="${WORK_DIR}/private-key.pem"
+  echo -e "${github_app_key}" > ${github_app_key_path}
 fi
 
 if [[ "$(uname)" == "Darwin" ]]; then
@@ -44,26 +44,26 @@ else
   base64_without_wrap="base64 -w 0"  # Linux, GNU
 fi
 
-if "${VERBOSE}"; then
+if "${verbose}"; then
   set -x
 fi
 
 mkdir -p ${WORK_DIR}
 
-header=$(echo -n '{"alg":"RS256","typ":"JWT"}' | $base64_without_wrap)
+header=$(echo -n '{"alg":"RS256","typ":"JWT"}' | ${base64_without_wrap})
 
 now=$(date "+%s")
 iat=$((${now} - 60))
 exp=$((${now} + (10 * 60)))
-payload=$(echo -n "{\"iat\":${iat},\"exp\":${exp},\"iss\":${GITHUB_APP_ID}}" | $base64_without_wrap)
+payload=$(echo -n "{\"iat\":${iat},\"exp\":${exp},\"iss\":${github_app_id}}" | ${base64_without_wrap})
 
 unsigned_token="${header}.${payload}"
-signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign "${GITHUB_APP_KEY_PATH}" | base64)
+signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign "${github_app_key_path}" | base64)
 
 jwt="${unsigned_token}.${signed_token}"
 
-installation_id=$GITHUB_APP_INSTALLATION
-if [ -z "$installation_id" ]; then
+installation_id=${github_app_installation}
+if [ -z "${installation_id}" ]; then
   installation_id=$(
     curl -f -s -X GET \
       -H "Authorization: Bearer ${jwt}" \
@@ -71,7 +71,7 @@ if [ -z "$installation_id" ]; then
       "https://api.github.com/app/installations" \
     | jq -r ".[] | .id?" \
     ) 2>&1
-  if [ "$installation_id" = "null" ]; then
+  if [ "${installation_id}" = "null" ]; then
     raise "Failed to fetch installation_id"
   fi
 fi
@@ -83,7 +83,7 @@ github_app_token=$(
     "https://api.github.com/app/installations/${installation_id}/access_tokens" \
   | jq -r ".token?" \
   ) 2>&1
-if [ "$github_app_token" = "null" ]; then
+if [ "${github_app_token}" = "null" ]; then
   raise "Failed to fetch github_app_token"
 fi
 

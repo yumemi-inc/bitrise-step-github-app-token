@@ -65,37 +65,37 @@ toolkit:
     entry_file: step.sh
 
 inputs:
-  - GITHUB_APP_TOKEN: $GITHUB_APP_TOKEN
+  - github_app_token: $GITHUB_APP_TOKEN
     opts:
       title: "GitHub App Token"
       is_sensitive: true
       is_dont_change_value: true
 
-  - GITHUB_APP_ID:
+  - github_app_id:
     opts:
       title: "GitHub App Id"
       is_required: true
 
-  - GITHUB_APP_INSTALLATION:
+  - github_app_installation:
     opts:
       title: "GitHub App installation"
       category: GitHub App installation
       is_sensitive: true
 
-  - GITHUB_APP_KEY:
+  - github_app_key:
     opts:
       title: "GitHub App key"
       category: GitHub App key
       is_sensitive: true
 
-  - GITHUB_APP_KEY_PATH: private-key.pem
+  - github_app_key_path: private-key.pem
     opts:
       title: "GitHub App key path"
       category: GitHub App key
       is_expand: true
       is_required: true
 
-  - VERBOSE: "false"
+  - verbose: "false"
     opts:
       title: "Verbose"
       category: Debug
