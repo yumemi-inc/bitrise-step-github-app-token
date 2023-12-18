@@ -58,7 +58,7 @@ exp=$((${now} + (10 * 60)))
 payload=$(echo -n "{\"iat\":${iat},\"exp\":${exp},\"iss\":${github_app_id}}" | ${base64_without_wrap})
 
 unsigned_token="${header}.${payload}"
-signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign "${github_app_key_path}" | base64)
+signed_token=$(echo -n "${unsigned_token}" | openssl dgst -binary -sha256 -sign "${github_app_key_path}" | ${base64_without_wrap})
 
 jwt="${unsigned_token}.${signed_token}"
 
