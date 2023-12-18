@@ -69,8 +69,7 @@ if [ -z "${installation_id}" ]; then
       -H "Authorization: Bearer ${jwt}" \
       -H "Accept: application/vnd.github.v3+json" \
       "https://api.github.com/app/installations" \
-    | jq -r ".[] | .id?" \
-    ) 2>&1
+    | jq -r ".[] | .id?")
   if [ "${installation_id}" = "" ]; then
     raise "Failed to fetch installation_id"
   fi
@@ -81,8 +80,7 @@ github_app_token=$(
     -H "Authorization: Bearer ${jwt}" \
     -H "Accept: application/vnd.github.v3+json" \
     "https://api.github.com/app/installations/${installation_id}/access_tokens" \
-  | jq -r ".token?" \
-  ) 2>&1
+  | jq -r ".token?")
 if [ "${github_app_token}" = "" ]; then
   raise "Failed to fetch github_app_token"
 fi
