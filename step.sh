@@ -71,7 +71,7 @@ if [ -z "${installation_id}" ]; then
       "https://api.github.com/app/installations" \
     | jq -r ".[] | .id?" \
     ) 2>&1
-  if [ "${installation_id}" = "null" ]; then
+  if [ "${installation_id}" = "" ]; then
     raise "Failed to fetch installation_id"
   fi
 fi
@@ -83,7 +83,7 @@ github_app_token=$(
     "https://api.github.com/app/installations/${installation_id}/access_tokens" \
   | jq -r ".token?" \
   ) 2>&1
-if [ "${github_app_token}" = "null" ]; then
+if [ "${github_app_token}" = "" ]; then
   raise "Failed to fetch github_app_token"
 fi
 
