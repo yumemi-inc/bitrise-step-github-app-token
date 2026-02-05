@@ -76,11 +76,12 @@ inputs:
       title: "GitHub App Id"
       is_required: true
 
-  - github_app_installation:
+  - github_app_installation: $GITHUB_APP_INSTALLATION
     opts:
-      title: "GitHub App installation"
+      title: "GitHub App Installation ID"
       category: GitHub App installation
       is_sensitive: true
+      is_dont_change_value: true
 
   - github_app_key:
     opts:
