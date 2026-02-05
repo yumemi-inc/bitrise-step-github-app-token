@@ -71,7 +71,7 @@ inputs:
       is_sensitive: true
       is_dont_change_value: true
 
-  - github_app_id:
+  - github_app_id: $GITHUB_APP_ID
     opts:
       title: "GitHub App Id"
       is_required: true
@@ -83,11 +83,12 @@ inputs:
       is_sensitive: true
       is_dont_change_value: true
 
-  - github_app_key:
+  - github_app_key: $GITHUB_APP_KEY
     opts:
       title: "GitHub App key"
       category: GitHub App key
       is_sensitive: true
+      is_dont_change_value: true
 
   - github_app_key_path: private-key.pem
     opts:
